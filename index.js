@@ -16,6 +16,7 @@ app.get('/', (req, res) => {
 });
 
 
+/* Insertamos nuevos clientes */
 app.post('/usuarios', async (req, res) => {
     console.log(req.body);
     const { nombre, apellido, email, password } = req.body;
@@ -29,9 +30,14 @@ app.post('/usuarios', async (req, res) => {
 
     await nuevoUsuario.save();
 
+    res.json({
+        saludo: 'Dato guardado'
+    })
+
 
 });
 
+/* obtenemos toda la lista de clientes */
 app.get('/clientes', async (req, res) => {
 
     const personas = await Usuario.find({},
@@ -44,12 +50,31 @@ app.get('/clientes', async (req, res) => {
 
     console.log(personas);
 
-/*     let miDia = new Date()
-    console.log(miDia); */
-
     res.json({
         personas 
     })
+
+})
+
+/* Eliminalos los datos del cliente */
+app.delete('/clientes/:id', async (req, res) => {
+
+    const id = req.params.id;
+    
+    console.log(id);
+    
+    try {
+        const deleteUser = await Usuario.findByIdAndDelete(id);
+        console.log(deleteUser);
+        if (!deleteUser){
+            return res.status(404).send();
+        }else{
+            console.log('Cliente Eliminado');
+            return res.status(200).send();
+        }
+    } catch (error) {
+        console.log(error);
+    }
 
 })
 
